@@ -174,6 +174,30 @@ def get_config(network, data_shape, **kwargs):
         normalizations = -1
         steps = []
         return locals()
+    elif network == 'mobilenet_kk' or network == 'mobilenet_deploy':
+        from_layers = ['conv5_5_sep_relu', 'conv6_sep_relu', '', '', '', '']
+        num_filters = [-1, -1,  512, 256, 256, 128]
+        strides = [-1, -1, 2, 2, 2, 2]
+        pads = [-1, -1, 1, 1, 1, 1]
+        sizes = [[.1, .141], [.2,.272], [.37, .447], [.54, .619], [.71, .79], [.88, .961]]
+        ratios = [[1,2,.5], [1,2,.5,3,1./3], [1,2,.5,3,1./3], [1,2,.5,3,1./3], \
+            [1,2,.5], [1,2,.5]]
+        normalizations = -1
+        steps = []
+        return locals()
+    elif network == 'mobilenet_little' or network == 'mobilenet_little_deploy':
+        from_layers = ['conv4_1_sep_relu', 'conv5_5_sep_relu']
+        num_filters = [-1, -1]
+        strides = [-1, -1]
+        pads = [-1, -1]
+        #sizes = [[.08, .141], [.14,.2072]]
+        #ratios = [[1,2,.5,1./3], [1,2,.5,3,1./3]]
+        sizes = [[.08, .141], [.12,.20]]
+        ratios = [[1,.9,.777], [1,.9,.777]]
+        #ratios = [[1,.5,.707], [1,.5,.707]]
+        normalizations = -1
+        steps = []
+        return locals()
     else:
         msg = 'No configuration found for %s with data_shape %d' % (network, data_shape)
         raise NotImplementedError(msg)

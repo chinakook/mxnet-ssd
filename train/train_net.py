@@ -28,6 +28,10 @@ def convert_pretrained(name, args):
     ---------
     processed arguments as dict
     """
+    
+    #for mobilenet_kk, del unused params
+    #del args['fc7_weight']
+    #del args['fc7_bias']
     return args
 
 def get_optimizer_params(optimizer=None, learning_rate=None, momentum=None,
@@ -219,11 +223,15 @@ def train_net(network, train_path, num_classes, batch_size,
         mean_pixels = [mean_pixels, mean_pixels, mean_pixels]
     assert len(mean_pixels) == 3, "must provide all RGB mean values"
 
-    train_iter = DetRecordIter(train_path, batch_size, data_shape, mean_pixels=mean_pixels,
+    scale = 1.0
+    if net == 'mobilenet_kk' or net == 'mobilenet_little':
+        scale = 0.017
+
+    train_iter = DetRecordIter(train_path, batch_size, data_shape, mean_pixels=mean_pixels, scale=scale,
                                label_pad_width=label_pad_width, path_imglist=train_list, **cfg.train)
 
     if val_path:
-        val_iter = DetRecordIter(val_path, batch_size, data_shape, mean_pixels=mean_pixels,
+        val_iter = DetRecordIter(val_path, batch_size, data_shape, mean_pixels=mean_pixels, scale=scale,
                                  label_pad_width=label_pad_width, path_imglist=val_list, **cfg.valid)
     else:
         val_iter = None
